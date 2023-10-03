@@ -45,7 +45,7 @@ class LinkGeneratorTest {
     }
 
     @Test
-    public void link_generator_must_return_char_a_on_11(){
+    public void link_generator_must_return_char_a_on_10(){
         Random rnd = mock(Random.class);
         when(rnd.nextInt(11)).thenReturn(10);
         LinkGenerator linkGenerator = new LinkGenerator(rnd, 11, 1);

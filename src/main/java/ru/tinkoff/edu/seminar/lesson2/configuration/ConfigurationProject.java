@@ -11,13 +11,13 @@ import java.util.Random;
 @Configuration
 public class ConfigurationProject {
 
-    @Value("${length.alphabet}")
+    @Value("${length.alphabet}") // смотри значение в папке resources
     private int lengthAlphabet;
 
     @Value("${length.link}")
     private int linkLength;
 
-    @Bean("generator")
+    @Bean("generator") // указываем как определить что подставить из контекста если тип имеет два Bean
     public LinkGenerator linkGenerator(){
         return new LinkGenerator(new Random(), lengthAlphabet, linkLength);
     }

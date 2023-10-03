@@ -7,6 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShortLinkHolderMapTest {
 
+    /**
+     * Плохой пример теста. При сборке не видим что именно сломалось. Так же мы не видим какая логика в холдере
+     * хотя класс полностью покрыт
+     */
     @Test
     void holder_test() {
         var holder = new ShortLinkHolderMap();

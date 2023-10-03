@@ -9,6 +9,7 @@ import ru.tinkoff.edu.seminar.lesson2.domain.Link;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+// Тест на контекст тут возможно избыточен
 @SpringBootTest
 class ShortLinkServiceTest {
 

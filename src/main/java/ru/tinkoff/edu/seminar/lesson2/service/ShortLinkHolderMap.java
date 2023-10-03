@@ -7,8 +7,10 @@ import ru.tinkoff.edu.seminar.lesson2.domain.Link;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+// наследует 2 интерфейса по четвертому принципу SOLID чтобы мы могли читать из одной базы а писать в другую.
+// Например для реализации кэширующей прослойки или https://ru.wikipedia.org/wiki/CQRS
 @Component
-@Primary
+@Primary // говорим если было 2 бина с таким типом то этот бин будет доминировать
 public class ShortLinkHolderMap implements ShortLinkHolder, LinkProvider {
 
     private ConcurrentHashMap<String, Link> map = new ConcurrentHashMap<>();

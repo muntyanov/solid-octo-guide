@@ -1,23 +1,16 @@
 package ru.tinkoff.edu.seminar.lesson2.service;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.tinkoff.edu.seminar.lesson2.configuration.ApplicationConfiguration;
 import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
-
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -75,6 +68,41 @@ class ShortLinkServiceTest {
         AbstractLink link = service.create(fullLink);
         assertEquals(1, service.findAll().size());
         assertEquals(link, service.findAll().stream().findFirst().get());
+    }
+
+    @Test
+    void should_concurrently_create() throws InterruptedException {
+        var fixedThreadPoolExecutor = Executors.newFixedThreadPool(100);
+        var cdl = new CountDownLatch(1000);
+        for (int i = 0; i < 1000; i++) {
+            int finalI = i;
+            fixedThreadPoolExecutor.execute(() -> {
+                assertDoesNotThrow(() -> service.create("testString" + finalI));
+                cdl.countDown();
+            });
+        }
+        cdl.await();
+        fixedThreadPoolExecutor.shutdownNow();
+        assertEquals(1000, holder.allShortLinks().size());
+    }
+
+    @Test
+    void should_concurrently_create_and_find() throws InterruptedException {
+        var listShortLinks = new ArrayList<String>();
+        for (int i = 0; i < 1000; i++) {
+            listShortLinks.add(service.create("testString" + i).getShortUrl());
+        }
+        var fixedThreadPoolExecutor = Executors.newFixedThreadPool(100);
+        var cdl = new CountDownLatch(1000);
+        for (String link : listShortLinks) {
+            fixedThreadPoolExecutor.execute(() -> {
+                assertDoesNotThrow(() -> service.find(link));
+                cdl.countDown();
+            });
+        }
+        cdl.await();
+        fixedThreadPoolExecutor.shutdownNow();
+        assertEquals(1000, holder.allShortLinks().size());
     }
 
     static String shortLink = "short";

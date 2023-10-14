@@ -6,14 +6,12 @@ public class ResponseDto {
     public record LinkCreateResponseDto(
             String fullUrl,
             String shortUrl
-    ) {
-    }
+    ) {}
 
     public record LinkListResponseDto(
             Collection<String> fullUrl,
             String shortUrl
-    ) {
-    }
+    ) {}
 
     public record ProbabilityLinkCreateResponseDto (
             Collection<String> fullUrl,

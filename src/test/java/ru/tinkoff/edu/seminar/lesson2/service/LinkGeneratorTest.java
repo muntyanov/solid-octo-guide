@@ -82,4 +82,14 @@ class LinkGeneratorTest {
         LinkGenerator linkGenerator = new LinkGenerator(random, 62, i);
         assertTrue(linkGenerator.get().length() == i);
     }
+
+    @Test
+    public void link_generator_must_return_uniqual_values(){
+        LinkGenerator linkGenerator = new LinkGenerator(random, 62, 4);
+        var set = new HashSet<String>();
+        for (int i = 0; i < 100; i++) {
+            set.add(linkGenerator.get());
+        }
+        assertEquals(100, set.size());
+    }
 }

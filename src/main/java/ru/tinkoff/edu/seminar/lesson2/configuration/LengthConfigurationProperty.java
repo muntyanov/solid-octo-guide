@@ -22,5 +22,4 @@ public class LengthConfigurationProperty {
     @Max(value = 6, message = "Ссылка должна быть короче 7 символов")
     private int link;
 
-
 }

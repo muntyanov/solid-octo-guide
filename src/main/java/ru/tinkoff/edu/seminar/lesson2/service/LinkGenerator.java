@@ -8,7 +8,6 @@ import java.util.Random;
 
 public class LinkGenerator {
 
-
     public LinkGenerator(Random random, int lengthAlphabet, int length){
         this.random = random;
         this.lengthAlphabet = lengthAlphabet;

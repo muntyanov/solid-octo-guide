@@ -1,18 +1,21 @@
 package ru.tinkoff.edu.seminar.lesson2.service;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
+import ru.tinkoff.edu.seminar.lesson2.domain.ProbabilityBaseUrlLink;
 
 import java.util.Collection;
+import java.util.Map;
 
 @Service
 public class ShortLinkService {
 
     @Autowired
     public ShortLinkService(
-            @Qualifier("generator") LinkProvider generator,
+            LinkGenerator generator,
             ShortLinkHolder holder,
             LinkProvider provider
     ) {
@@ -21,37 +24,38 @@ public class ShortLinkService {
         this.provider = provider;
     }
 
-    private LinkProvider generator;
+    private final LinkGenerator generator;
 
-    private ShortLinkHolder holder;
+    private final ShortLinkHolder holder;
 
-    private LinkProvider provider;
+    private final LinkProvider provider;
 
-    public Link create(String fullPath) {
-        Link link;
-        link = generator.get(fullPath);
+    public AbstractLink create(String fullPath) {
+        AbstractLink link = new Link(fullPath, generator.get());
+        return save(link);
+    }
+
+    public ProbabilityBaseUrlLink create(Map<String, Integer> fullPath) {
+        ProbabilityBaseUrlLink link = new ProbabilityBaseUrlLink(fullPath, generator.get());
+        save(link);
+        return link;
+    }
+
+    private AbstractLink save(AbstractLink link){
         if(holder.exists(link.getShortUrl()))
             throw new RuntimeException("Повторите попытку");
         return holder.save(link);
     }
 
-    public Link find(String shortPath) {
+    public AbstractLink find(String shortPath) {
         return provider.get(shortPath);
     }
 
-    public LinkProvider getGenerator() {
-        return generator;
-    }
-
-    public ShortLinkHolder getHolder() {
-        return holder;
-    }
-
-    public LinkProvider getProvider() {
-        return provider;
-    }
-
-    public Collection<Link> findAll() {
+    public Collection<AbstractLink> findAll() {
         return holder.allShortLinks();
+    }
+
+    public boolean delete(String shortLink) {
+        return holder.delete(shortLink);
     }
 }

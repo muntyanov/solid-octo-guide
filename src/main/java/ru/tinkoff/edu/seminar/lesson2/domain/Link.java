@@ -1,27 +1,27 @@
 package ru.tinkoff.edu.seminar.lesson2.domain;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 
-public class Link {
+
+public class Link extends AbstractLink{
     public Link(String fullUrl, String shortUrl) {
         this.fullUrl = fullUrl;
         this.shortUrl = shortUrl;
     }
 
+    @NotNull
     private String fullUrl;
+
+    @NotNull
     private String shortUrl;
 
-    private LocalDateTime timeOfCreate = LocalDateTime.now();
-
+    @Override
     public String getFullUrl() {
         return fullUrl;
     }
 
+    @Override
     public String getShortUrl() {
         return shortUrl;
-    }
-
-    public LocalDateTime getTimeOfCreate() {
-        return timeOfCreate;
     }
 }

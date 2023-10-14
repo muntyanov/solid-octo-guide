@@ -1,10 +1,12 @@
 package ru.tinkoff.edu.seminar.lesson2.service;
 
+import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
 
+import java.util.List;
 import java.util.Random;
 
-public class LinkGenerator implements LinkProvider {
+public class LinkGenerator {
 
 
     public LinkGenerator(Random random, int lengthAlphabet, int length){
@@ -13,14 +15,13 @@ public class LinkGenerator implements LinkProvider {
         this.length = length;
     }
 
-
     private final int length;
-    private int lengthAlphabet = 62;
+    private int lengthAlphabet;
     private Random random;
-    @Override
-    public Link get(String fullPath) {
+
+    public String get() {
         var shortLink = generate();
-        return new Link(fullPath, shortLink);
+        return shortLink;
     }
 
     private String generate() {

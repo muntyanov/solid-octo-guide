@@ -1,16 +1,19 @@
 package ru.tinkoff.edu.seminar.lesson2.service;
 
+import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
 
 import java.util.Collection;
 
 public interface ShortLinkHolder {
 
-    Link save(Link link);
+    AbstractLink save(AbstractLink link);
 
-    Collection<Link> allShortLinks();
+    Collection<AbstractLink> allShortLinks();
 
     void clear();
 
     boolean exists(String shortUrl);
+
+    boolean delete(String shortLink);
 }

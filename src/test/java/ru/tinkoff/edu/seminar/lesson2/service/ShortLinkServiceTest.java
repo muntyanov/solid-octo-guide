@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
+import ru.tinkoff.edu.seminar.lesson2.exception.NotCreateShortLinkException;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -36,14 +38,14 @@ class ShortLinkServiceTest {
     }
 
     @Test
-    public void should_create_only_one_link_by_short_link() {
+    public void should_create_only_one_link_by_short_link() throws NotCreateShortLinkException {
         when(generator.get()).thenReturn(shortLink);
         service.create(fullLink);
         assertTrue(holder.exists(shortLink));
     }
 
     @Test
-    public void should_create_only_one_link_by_probability() {
+    public void should_create_only_one_link_by_probability() throws NotCreateShortLinkException {
         when(generator.get()).thenReturn(shortLink);
         service.create(Map.of(fullLink, 1));
         assertTrue(holder.exists(shortLink));
@@ -54,17 +56,17 @@ class ShortLinkServiceTest {
         AbstractLink link = new Link(fullLink, generator.get());
         holder.save(link);
         when(generator.get()).thenReturn(link.getShortUrl());
-        assertThrows(RuntimeException.class, () -> service.create(fullLink));
+        assertThrows(NotCreateShortLinkException.class, () -> service.create(fullLink));
     }
 
     @Test
-    private void should_find_link() {
+    private void should_find_link() throws NotCreateShortLinkException {
         AbstractLink link = service.create(fullLink);
         assertEquals(link, service.find(link.getShortUrl()));
     }
 
     @Test
-    private void should_all_find_link() {
+    private void should_all_find_link() throws NotCreateShortLinkException {
         AbstractLink link = service.create(fullLink);
         assertEquals(1, service.findAll().size());
         assertEquals(link, service.findAll().stream().findFirst().get());
@@ -87,7 +89,7 @@ class ShortLinkServiceTest {
     }
 
     @Test
-    void should_concurrently_create_and_find() throws InterruptedException {
+    void should_concurrently_create_and_find() throws InterruptedException, NotCreateShortLinkException {
         var listShortLinks = new ArrayList<String>();
         for (int i = 0; i < 1000; i++) {
             listShortLinks.add(service.create("testString" + i).getShortUrl());

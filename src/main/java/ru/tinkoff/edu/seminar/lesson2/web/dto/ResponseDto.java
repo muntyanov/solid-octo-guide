@@ -13,7 +13,7 @@ public class ResponseDto {
             String shortUrl
     ) {}
 
-    public record ProbabilityLinkCreateResponseDto (
+    public record ProbabilityLinkCreateResponseDto(
             Collection<String> fullUrl,
             String shortUrl
     ) {}

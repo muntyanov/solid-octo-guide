@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +16,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ShortLinkExceptionHandler {
-    @ExceptionHandler(HttpClientErrorException.class)
-    ResponseEntity<String> handleFileUploadError(final HttpClientErrorException e) {
+    @ExceptionHandler(HttpStatusCodeException.class)
+    ResponseEntity<String> handleFileUploadError(final HttpStatusCodeException e) {
         return new ResponseEntity(e.getMessage(), e.getStatusCode());
     }
 

@@ -5,14 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
+import ru.tinkoff.edu.seminar.lesson2.exception.NotCreateShortLinkException;
+import ru.tinkoff.edu.seminar.lesson2.service.LinkGenerator;
 import ru.tinkoff.edu.seminar.lesson2.service.ShortLinkHolder;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,6 +31,9 @@ class ShortLinksControllerTest {
 
     @Autowired
     private ShortLinkHolder holder;
+
+    @SpyBean
+    private LinkGenerator generator;
 
     private final String url1 = "https://ya.ru";
 
@@ -106,7 +113,7 @@ class ShortLinksControllerTest {
         mockMvc.perform(
                         delete("/link/1")
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         assertFalse(holder.exists("1"));
     }
 
@@ -173,6 +180,30 @@ class ShortLinksControllerTest {
                 .andExpect(jsonPath("$[0]").hasJsonPath())
                 .andExpect(jsonPath("$[1]").hasJsonPath())
                 .andExpect(jsonPath("$[2]").doesNotExist());
+    }
+
+    @Test
+    void should_return_500_if_cant_create_short_link_by_probability() throws Exception {
+        when(generator.get()).thenReturn("some");
+        holder.save(new Link(url2, "some"));
+        mockMvc.perform(
+                        post("/link/probability")
+                        .header("Content-Type", "application/json")
+                        .content(String.format("{\"probability\":{\"%s\":1, \"%s\":2}}", url1, url2))
+
+                )
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void should_return_500_if_cant_create_short_link() throws Exception {
+        when(generator.get()).thenReturn("some");
+        holder.save(new Link(url2, "some"));
+        mockMvc.perform(
+                        post("/link")
+                                .content(url1)
+                )
+                .andExpect(status().isInternalServerError());
     }
 
     @Test

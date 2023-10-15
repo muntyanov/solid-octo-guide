@@ -1,11 +1,11 @@
 package ru.tinkoff.edu.seminar.lesson2.service;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.seminar.lesson2.domain.AbstractLink;
 import ru.tinkoff.edu.seminar.lesson2.domain.Link;
 import ru.tinkoff.edu.seminar.lesson2.domain.ProbabilityBaseUrlLink;
+import ru.tinkoff.edu.seminar.lesson2.exception.NotCreateShortLinkException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -30,20 +30,20 @@ public class ShortLinkService {
 
     private final LinkProvider provider;
 
-    public AbstractLink create(String fullPath) {
+    public AbstractLink create(String fullPath) throws NotCreateShortLinkException {
         AbstractLink link = new Link(fullPath, generator.get());
         return save(link);
     }
 
-    public ProbabilityBaseUrlLink create(Map<String, Integer> fullPath) {
+    public ProbabilityBaseUrlLink create(Map<String, Integer> fullPath) throws NotCreateShortLinkException {
         ProbabilityBaseUrlLink link = new ProbabilityBaseUrlLink(fullPath, generator.get());
         save(link);
         return link;
     }
 
-    private AbstractLink save(AbstractLink link){
+    private AbstractLink save(AbstractLink link) throws NotCreateShortLinkException {
         if(holder.exists(link.getShortUrl()))
-            throw new RuntimeException("Повторите попытку");
+            throw new NotCreateShortLinkException();
         return holder.save(link);
     }
 

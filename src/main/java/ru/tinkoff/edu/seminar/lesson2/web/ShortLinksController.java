@@ -44,7 +44,6 @@ public class ShortLinksController {
     @Operation(summary = "Получить ссылку из короткой",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Возвращает объект созданной ссылки"),
-                    @ApiResponse(responseCode = "400", description = "Пустая строка не может быть короткой ссылкой"),
                     @ApiResponse(responseCode = "404", description = "Ссылка не найдена")
             })
     @GetMapping("/link/{shortLink}")

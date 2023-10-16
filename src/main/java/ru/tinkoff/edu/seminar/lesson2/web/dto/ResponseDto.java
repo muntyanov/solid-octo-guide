@@ -2,19 +2,19 @@ package ru.tinkoff.edu.seminar.lesson2.web.dto;
 
 import java.util.Collection;
 
-public class ResponseDto {
-    public record LinkCreateResponseDto(
+public interface ResponseDto {
+    record LinkCreateResponseDto(
             String fullUrl,
             String shortUrl
-    ) {}
+    ) implements ResponseDto {}
 
-    public record LinkListResponseDto(
+    record LinkListResponseDto(
             Collection<String> fullUrl,
             String shortUrl
-    ) {}
+    ) implements ResponseDto {}
 
-    public record ProbabilityLinkCreateResponseDto(
+    record ProbabilityLinkCreateResponseDto(
             Collection<String> fullUrl,
             String shortUrl
-    ) {}
+    ) implements ResponseDto {}
 }

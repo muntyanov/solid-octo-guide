@@ -57,7 +57,7 @@ public class ShortLinksController {
 
     @Operation(summary = "Удалить короткую ссылку",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Ссылка удалена"),
+                    @ApiResponse(responseCode = "204", description = "Ссылка удалена"),
                     @ApiResponse(responseCode = "404", description = "Ссылка не найдена")
             })
     @DeleteMapping("/link/{shortLink}")
